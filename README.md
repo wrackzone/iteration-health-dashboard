@@ -3,6 +3,12 @@ DashB
 
 ## Overview
 
+This app provides key iteration health metrics for Rally teams. 
+
+
+
+![screenshot](https://raw.githubusercontent.com/wrackzone/iteration-health-dashboard/master/screen-shot.png)
+
 
 ## License
 
