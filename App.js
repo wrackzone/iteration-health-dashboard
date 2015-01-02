@@ -71,8 +71,13 @@ Ext.define('CustomApp', {
                 xtype: 'rallytextfield',
                 label: 'Continuous Improvement Range Max'
             }
-
         ];
+
+        _.each(values,function(value){
+			value.labelWidth = 250;
+            value.labelAlign = 'left'
+        });
+
         return values;
     },
 
