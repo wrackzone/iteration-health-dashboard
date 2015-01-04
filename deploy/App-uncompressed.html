@@ -60,7 +60,11 @@ Ext.define('CustomApp', {
                 xtype: 'rallycheckboxfield',
                 label : "Show average daily percentage of work that is In-Progress"
             },
-
+	        {
+                name: 'showBurnDownResiduals',
+                xtype: 'rallycheckboxfield',
+                label : "Show burn down residuals (values closer to 1 indicate burndown closer to ideal)"
+            },
             {
                 name: 'useLateAcceptanceRate',
                 xtype: 'rallycheckboxfield',
@@ -95,15 +99,16 @@ Ext.define('CustomApp', {
         defaultSettings : {
         	numberSprints : 4,
         	showAcceptanceRateMetric : true,
-        	showImprovementRateMetric : true,
+        	showImprovementRateMetric : false,
         	showChurnRateMetric : true,
         	showPercentEstimatedMetric : true,
         	showTaskChurnRateMetric : true,
         	showDailyInProgressMetric : true,
+        	showBurnDownResiduals : true,
             commitAcceptRatio : 75,
             continuousImprovementRangeMin : 5,
             continuousImprovementRangeMax : 10,
-            useLateAcceptanceRate : false
+            useLateAcceptanceRate : true
         }
     },
 
@@ -397,33 +402,82 @@ Ext.define('CustomApp', {
 
 	burnDownResiduals : function ( arrDailyRecs ) {
 
-		var dailyTotals = _.map( arrDailyRecs, function(recs) {
-			return _.reduce(recs,function(memo,r) { return memo + r.get("TaskEstimateTotal");},0)
+		var keys = _.keys(arrDailyRecs);
+
+		var firstDayEstimate = _.reduce( arrDailyRecs[_.first(keys)], function(memo,rec) {
+			return memo + rec.get("TaskEstimateTotal");
+		},0);
+
+		var ideal = _.map(keys,function(k,i) {
+			return Math.round(firstDayEstimate - (i*(firstDayEstimate/(keys.length-1))));
 		});
-		// calc burndown
-		var maxTaskScope = _.max(dailyTotals);
-		console.log("maxTaskScope",maxTaskScope);
-		var residuals = [];
-
-		var dailyToDo = _.map( arrDailyRecs, function(recs) {
-			return _.reduce(recs,function(memo,r) { return memo + r.get("CardToDoTotal");},0)
+		var todo = _.map(keys,function(k,i) {
+			return Math.round(_.reduce( arrDailyRecs[k], function(memo,rec) {
+				return memo + rec.get("CardToDoTotal");
+			},0));
+		});
+		var estimate = _.map(keys,function(k,i) {
+			return Math.round(_.reduce( arrDailyRecs[k], function(memo,rec) {
+				return memo + rec.get("TaskEstimateTotal");
+			},0));
 		});
 
-		var sse = _.reduce(arrDailyRecs,function(memo, dailyRecs,i) { 
-			var todo = _.reduce(dailyRecs,function(memo,r) { return memo + r.get("CardToDoTotal");},0);
-			var ideal = maxTaskScope - ( i * (maxTaskScope / arrDailyRecs.length));
-			var res = ideal - todo;
-			console.log("todo,ideal,res",todo,ideal,res);
-			return memo + (res*res);
-		}, 0 );
-		var n = arrDailyRecs.length;
-		var sst = (Math.sqrt(sse)) / n;
-		var r2 = 1 - (sse/sst);
-		console.log("n,sse,sqr(sse),sst,r2",n,sse,Math.sqrt(sse),sst,r2);
+		console.log(ideal,todo,estimate)
+		var rec = { ideal : ideal, todo : todo, estimate : estimate };
 
+		var rs = app.rSquared(rec);
 
+		console.log("rs",rs);
 
-		return _.stdDeviation(residuals);
+		return rs;
+
+		// console.log("keys:",keys);
+
+		// var dailyTotals = _.map( arrDailyRecs, function(recs) {
+		// 	return _.reduce(recs,function(memo,r) { return memo + r.get("TaskEstimateTotal");},0)
+		// });
+		// // calc burndown
+		// var maxTaskScope = _.max(dailyTotals);
+		// console.log("maxTaskScope",maxTaskScope);
+		// var residuals = [];
+
+		// var dailyToDo = _.map( arrDailyRecs, function(recs) {
+		// 	return _.reduce(recs,function(memo,r) { return memo + r.get("CardToDoTotal");},0)
+		// });
+
+		// var sse = _.reduce(arrDailyRecs,function(memo, dailyRecs,i) { 
+		// 	var todo = _.reduce(dailyRecs,function(memo,r) { return memo + r.get("CardToDoTotal");},0);
+		// 	var ideal = maxTaskScope - ( i * (maxTaskScope / arrDailyRecs.length));
+		// 	var res = ideal - todo;
+		// 	console.log("todo,ideal,res",todo,ideal,res);
+		// 	return memo + (res*res);
+		// }, 0 );
+		// var n = arrDailyRecs.length;
+		// var sst = (Math.sqrt(sse)) / n;
+		// var r2 = 1 - (sse/sst);
+		// console.log("n,sse,sqr(sse),sst,r2",n,sse,Math.sqrt(sse),sst,r2);
+
+		// return _.stdDeviation(residuals);
+	},
+
+	rSquared : function(burndown) {
+
+	var squaredError = _.map( burndown.ideal, function(ideal,i) {
+		var diff = ideal - burndown.todo[i];
+		return diff * diff;
+	});
+
+	var mean = _.average(burndown.todo);
+	var diffFromMean = _.map( burndown.todo, function(todo,i) {
+		var diff = todo - mean;
+		return diff * diff;
+	});
+
+	var sse = _.sum(squaredError);
+	var sst = _.sum(diffFromMean);
+	var rs = sst !== 0 ?  1 - (Math.round( (sse/sst) *100 ) / 100) : 0
+	return rs;
+
 	},
 
 	// average daily in progress rate (based on points)
@@ -490,6 +544,14 @@ Ext.define('CustomApp', {
 			align : "center" 
 		};
 
+		app.burnDownResiduals = { 
+			text: 'Task Burndown Residuals', 
+			dataIndex: 'summary', 
+			renderer : app.renderBurnDownResiduals,
+			width : 150, 
+			align : "center" 
+		};
+
 	},
 
 	addTable : function(teamResults) {
@@ -513,6 +575,8 @@ Ext.define('CustomApp', {
 			columnCfgs.push(app.taskChurnRateColumn);
 		if (app.getSetting("showDailyInProgressMetric")===true)
 			columnCfgs.push(app.dailyInProgressColumn);
+		if (app.getSetting("showBurnDownResiduals")===true)
+			columnCfgs.push(app.burnDownResiduals);
 
 		var grid = Ext.create('Rally.ui.grid.Grid', {
 			store: Ext.create('Rally.data.custom.Store', {
@@ -553,37 +617,35 @@ Ext.define('CustomApp', {
 	},
 
 	renderImprovementChart: function(value, metaData, record, rowIdx, colIdx, store, view) {
-
 		var id = app.renderChart(record,value,['index','improvementPercent'],'ImprovementRatio');
 		return "<div id='"+id+"'></div>";
-
 	},
 
 	renderChurnChart: function(value, metaData, record, rowIdx, colIdx, store, view) {
-
 		var id = app.renderChart(record,value,['index','churnRatio'],'ChurnRatio');
 		return "<div id='"+id+"'></div>";
-
 	},
 
 	renderTaskChurnRateChart: function(value, metaData, record, rowIdx, colIdx, store, view) {
-
 		var id = app.renderChart(record,value,['index','taskChurnRatio'],'TaskChurnRatio');
 		return "<div id='"+id+"'></div>";
-
 	},
 
 	renderPercentEstimatedChart: function(value, metaData, record, rowIdx, colIdx, store, view) {
-
 		var id = app.renderChart(record,value,['index','percentEstimated'],'PercentEstimated');
 		return "<div id='"+id+"'></div>";
 	},
 
 	renderDailyInProgressChart: function(value, metaData, record, rowIdx, colIdx, store, view) {
-
 		var id = app.renderChart(record,value,['index','dailyInProgressRate'],'DailyInProgressRate');
 		return "<div id='"+id+"'></div>";
 	},
+
+	renderBurnDownResiduals: function(value, metaData, record, rowIdx, colIdx, store, view) {
+		var id = app.renderChart(record,value,['index','stdResiduals'],'stdResiduals');
+		return "<div id='"+id+"'></div>";
+	},
+
 
 	renderChart : function( record, value, fields, chartName ) {
 
