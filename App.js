@@ -19,7 +19,6 @@ Ext.define('CustomApp', {
                 xtype: 'rallytextfield',
                 label : "Number of sprints to report on."
             },
-
             {
                 name: 'showAcceptanceRateMetric',
                 xtype: 'rallycheckboxfield',
@@ -231,6 +230,8 @@ Ext.define('CustomApp', {
 				var allData = [];
 				_.each(iterations,function(iteration,x) {
 					var iterationArtifacts = storyResults[x].concat(defectResults[x]);
+					
+					// total individual values for each artifact in iteration.
 					var allIterationData = {
 						totalScope : _.reduce(iterationArtifacts, function(memo,r) {
 							return memo + (r.get("PlanEstimate")!==null  ? r.get("PlanEstimate") : 0)
