@@ -20,6 +20,17 @@ Ext.define('CustomApp', {
                 label : "Number of sprints to report on."
             },
             {
+		        name: 'showOnlyTeams',
+                xtype: 'rallycheckboxfield',
+                label : "Only show projects with at least one team member."
+            },
+            {
+		        name: 'showTeamMembers',
+                xtype: 'rallycheckboxfield',
+                label : "Show team members column."
+            },
+
+            {
                 name: 'showAcceptanceRateMetric',
                 xtype: 'rallycheckboxfield',
                 label : "Show Accepted .v. Commit %"
@@ -87,6 +98,8 @@ Ext.define('CustomApp', {
     config: {
         defaultSettings : {
         	numberSprints : 4,
+        	showOnlyTeams : false,
+        	showTeamMembers : true,
         	showAcceptanceRateMetric : true,
         	showImprovementRateMetric : false,
         	showChurnRateMetric : true,
@@ -135,33 +148,38 @@ Ext.define('CustomApp', {
 			We group the iterations by project (team), and then get metrics for the last four iterations
 			for each team.
 		*/
-			console.log("Read",results[0].length,"Iterations");
 			var iterationsRaw = results[0];
 			var prjRefs = _.map(results[0],function(iter)
 			{
-							return iter.get("Project").ObjectID;
+				return iter.get("Project").ObjectID;
 			});
 			var uniqPrjRefs = _.uniq(prjRefs);
 
 			var querConfigs = _.map(uniqPrjRefs,function(p) {
 				return{
 					model:"Project",
-					fetch: ["TeamMembers"],
+					fetch: ["TeamMembers","Name"],
 					filters: [{property:"ObjectID",value:p}]
 				};
 			});
-
 			async.map(querConfigs, app.wsapiQuery, function(err, results) {
+
 				var flatTM = _.flatten(results);
-				var flatNotEmptyTM = _.filter(flatTM, function(prj) { return prj.get("TeamMembers").Count > 0; });
+				var flatNotEmptyTM = _.filter(flatTM, function(prj) { return app.getSetting("showOnlyTeams") === false || prj.get("TeamMembers").Count > 0; });
+
 				var uniqPrjIdTM = _.map(flatNotEmptyTM, function(val) {
 								return val.get("ObjectID");
 				});
 
 				var inerNoEmptyTM = _.filter(iterationsRaw, function(iter) { return _.contains(uniqPrjIdTM, iter.get("Project").ObjectID );});
 
-				var groupedByProject = _.groupBy(inerNoEmptyTM,function(r) { return r.get("Project").Name;});
-				var teams = _.keys(groupedByProject);
+				// var groupedByProject = _.groupBy(inerNoEmptyTM,function(r) { return r.get("Project").Name;});
+				var groupedByProject = _.groupBy(inerNoEmptyTM,function(r) { return r.get("Project").ObjectID;});
+				var teams = _.map(_.keys(groupedByProject),function(pid) {
+					return _.find(flatNotEmptyTM,function(p) {
+						return p.get("ObjectID")==pid;
+					})
+				});
 				var teamLastIterations = _.map( _.values(groupedByProject), function(gbp) {
 					return _.last(gbp,app.numberSprints);
 				});          
@@ -172,12 +190,31 @@ Ext.define('CustomApp', {
 				async.map( teamLastIterations, app.teamData, function(error,results) {
 					app.teamResults = _.map(results, function(result,i) {
 						return {
-							team : teams[i],
+							team : teams[i].get("Name"),
 							summary : _.merge(results[i][0],results[i][1],results[i][2])
 						};
 					});
+
+					// get list of team members, 
+					async.map(teams, 
+						function(proj,callback) {
+							proj.getCollection("TeamMembers").load({
+								fetch:true,
+								callback : function(recs,operation,success) {
+									callback(null,recs);
+								}
+							});
+						},
+						function(err,teamMemberships) {
+							_.each(app.teamResults,function(t,x) {
+								t.teamMembers = teamMemberships[x]
+							})
+							console.log("teamResults",app.teamResults);
+							app.addTable(app.teamResults);
+						}
+					);
 					// create the table with the summary data.
-					app.addTable(app.teamResults);
+					
 				});
 			});
 		});
@@ -245,7 +282,6 @@ Ext.define('CustomApp', {
 								}).length / iterationArtifacts.length * 100)
 							  : 0
 					}
-					// console.log("allIterationData",allIterationData);
 					allData.push(allIterationData);
 				});
 				callback(null,allData);
@@ -322,7 +358,6 @@ Ext.define('CustomApp', {
 		async.map( configs, app.wsapiQuery, function(error,results) {
 			var summaries = [];
 			_.each(results,function(iterationRecords, index) {
-				console.log(iterations[index].get("Project")["Name"],iterations[index].get("Name"));
 				if(iterationRecords.length >0) {
 					// group the metrics by date,
 					var groupedByDate = _.groupBy(iterationRecords,function(ir) { return ir.get("CreationDate");});
@@ -330,7 +365,6 @@ Ext.define('CustomApp', {
 					var churnRatio = app.churnRatio(_.values(groupedByDate));
 					var taskChurnRatio = app.taskChurnRatio(_.values(groupedByDate));
 					var stdResiduals = app.burnDownResiduals(_.values(groupedByDate));
-					console.log("stdResiduals",stdResiduals);
 					var iterationDates = _.keys(groupedByDate);
 					var dailyInProgressRate = app.dailyInProgressRate(_.values(groupedByDate));
 					iterationDates = _.sortBy(iterationDates,function(d) {
@@ -413,42 +447,10 @@ Ext.define('CustomApp', {
 			},0));
 		});
 
-		console.log(ideal,todo,estimate)
 		var rec = { ideal : ideal, todo : todo, estimate : estimate };
-
 		var rs = app.rSquared(rec);
-
-		console.log("rs",rs);
-
 		return rs;
 
-		// console.log("keys:",keys);
-
-		// var dailyTotals = _.map( arrDailyRecs, function(recs) {
-		// 	return _.reduce(recs,function(memo,r) { return memo + r.get("TaskEstimateTotal");},0)
-		// });
-		// // calc burndown
-		// var maxTaskScope = _.max(dailyTotals);
-		// console.log("maxTaskScope",maxTaskScope);
-		// var residuals = [];
-
-		// var dailyToDo = _.map( arrDailyRecs, function(recs) {
-		// 	return _.reduce(recs,function(memo,r) { return memo + r.get("CardToDoTotal");},0)
-		// });
-
-		// var sse = _.reduce(arrDailyRecs,function(memo, dailyRecs,i) { 
-		// 	var todo = _.reduce(dailyRecs,function(memo,r) { return memo + r.get("CardToDoTotal");},0);
-		// 	var ideal = maxTaskScope - ( i * (maxTaskScope / arrDailyRecs.length));
-		// 	var res = ideal - todo;
-		// 	console.log("todo,ideal,res",todo,ideal,res);
-		// 	return memo + (res*res);
-		// }, 0 );
-		// var n = arrDailyRecs.length;
-		// var sst = (Math.sqrt(sse)) / n;
-		// var r2 = 1 - (sse/sst);
-		// console.log("n,sse,sqr(sse),sst,r2",n,sse,Math.sqrt(sse),sst,r2);
-
-		// return _.stdDeviation(residuals);
 	},
 
 	rSquared : function(burndown) {
@@ -486,6 +488,15 @@ Ext.define('CustomApp', {
 	},
 
 	defineChartColumns : function() {
+
+		app.teamMembersColumn = {
+			text: 'Team Members', 
+			dataIndex: 'teamMembers', 
+			renderer : app.renderTeamMembers,
+			width : 150, 
+			align : "left",
+			tdCls: 'wrap'
+		};
 
 		app.acceptanceRateColumn = {
 			text: '% Accepted Chart', 
@@ -553,7 +564,8 @@ Ext.define('CustomApp', {
 			{ text: 'Team', dataIndex: 'team', renderer : app.renderTeamName },
 			{ text: 'Last 4 Sprints', dataIndex: 'summary', renderer : app.renderSummaries, width : 200 },
 		];
-
+		if (app.getSetting("showTeamMembers")===true)
+			columnCfgs.push(app.teamMembersColumn);
 		if (app.getSetting("showAcceptanceRateMetric")===true)
 			columnCfgs.push(app.acceptanceRateColumn);
 		if (app.getSetting("showImprovementRateMetric")===true)
@@ -584,6 +596,19 @@ Ext.define('CustomApp', {
 	renderTeamName: function(value, metaData, record, rowIdx, colIdx, store, view) {
 		// return "Team " + rowIdx;
 		return value;
+	},
+
+	renderTeamMembers: function(value, metaData, record, rowIdx, colIdx, store, view) {
+		// return "Team " + rowIdx;
+		var userValue = function(m) {
+			var d = m.get("DisplayName");
+			return ((d!=null&&d!="") ? d : m.get("UserName"));
+		}
+
+		return _.map(value,function(teamMember,i) {
+			return userValue(teamMember) 
+		}).join("<br/>");
+		// + ( i < (value.length-1) ? "<br/>" : "")
 	},
 
 	renderAcceptedChart: function(value, metaData, record, rowIdx, colIdx, store, view) {
