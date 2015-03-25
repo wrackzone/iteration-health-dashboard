@@ -385,6 +385,7 @@ Ext.define('CustomApp', {
 						summaries.push( {
 							project : iterations[index].get("Project"),
 							iteration : iterations[index].get("Name"),
+							iteration_rec : iterations[index],
 							id : firstDayRecs[0].get("IterationObjectID"),
 							committed : Math.round(committed),
 							accepted : Math.round(accepted),
@@ -562,7 +563,7 @@ Ext.define('CustomApp', {
 
 		var columnCfgs = [
 			{ text: 'Team', dataIndex: 'team', renderer : app.renderTeamName },
-			{ text: 'Last 4 Sprints', dataIndex: 'summary', renderer : app.renderSummaries, width : 200 },
+			{ text: 'Last 4 Sprints', dataIndex: 'summary', renderer : app.renderSummaries, width : 250 },
 		];
 		if (app.getSetting("showTeamMembers")===true)
 			columnCfgs.push(app.teamMembersColumn);
@@ -749,8 +750,17 @@ Ext.define('CustomApp', {
 	},
 
 	renderSummaries: function(value, metaData, record, rowIdx, colIdx, store, view) {
+
+		var endDateF = function(iteration) {
+			var d = Rally.util.DateTime.fromIsoString(iteration.iteration_rec.raw.EndDate);
+			return Ext.Date.format(d, 'm/d');
+		};
+
 		var s = 
 		"<table class='iteration-summary'>" +
+			"<th>" +
+			_.map(value,function(v){ return '<td>'+endDateF(v)+'</td>'}).join('') +
+			"</th>"+
 			"<tr><td>Committed</td>" +
 			_.map(value,function(v){ return '<td>'+Math.round(v.committed)+'</td>' }).join('') +
 			"</tr>"+
