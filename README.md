@@ -14,7 +14,7 @@ A visual representation of key agile health indicators
 * **% Accepted** 
 How much work is being committed to each sprint, how much is accepted and how much is accepted during the iteration and how much is accepted after the iteration ("late" acceptance).
 
-* **Churn Ratio **
+* **Churn Ratio**
 A measure of how much the sprint backlog changes during the sprint, it is impacted by stories being moved into the sprint, out of the sprint or if estimates change.
 
 * **Percent Esitmated**
