@@ -1,13 +1,14 @@
-DashB
-=========================
+Iteration Health Dashboard
+==========================
+
+Barry Mullan (2015)
 
 ## Overview
 
 This app provides key iteration health metrics for Rally teams. 
 
-
-
 ![screenshot](https://raw.githubusercontent.com/wrackzone/iteration-health-dashboard/master/screen-shot.png)
+
 
 
 ## License
