@@ -11,7 +11,7 @@ This app provides key iteration health metrics for Rally teams.
 
 A visual representation of key agile health indicators
 
-* % Accepted
+* **% Accepted** 
 How much work is being committed to each sprint, how much is accepted and how much is accepted during the iteration and how much is accepted after the iteration ("late" acceptance).
 
 * Churn Ratio 
