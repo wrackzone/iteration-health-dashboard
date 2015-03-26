@@ -13,106 +13,106 @@ Ext.define('CustomApp', {
 	},
 
 	getSettingsFields: function() {
-        var values = [
-            {
-		        name: 'numberSprints',
-                xtype: 'rallytextfield',
-                label : "Number of sprints to report on."
-            },
-            {
-		        name: 'showOnlyTeams',
-                xtype: 'rallycheckboxfield',
-                label : "Only show projects with at least one team member."
-            },
-            {
-		        name: 'showTeamMembers',
-                xtype: 'rallycheckboxfield',
-                label : "Show team members column."
-            },
+		var values = [
+			{
+				name: 'numberSprints',
+				xtype: 'rallytextfield',
+				label : "Number of sprints to report on."
+			},
+			{
+				name: 'showOnlyTeams',
+				xtype: 'rallycheckboxfield',
+				label : "Only show projects with at least one team member."
+			},
+			{
+				name: 'showTeamMembers',
+				xtype: 'rallycheckboxfield',
+				label : "Show team members column."
+			},
 
-            {
-                name: 'showAcceptanceRateMetric',
-                xtype: 'rallycheckboxfield',
-                label : "Show Accepted .v. Commit %"
-            },
-            {
-                name: 'showImprovementRateMetric',
-                xtype: 'rallycheckboxfield',
-                label : "Show Improvement work as % of Scope"
-            },
-            {
-                name: 'showChurnRateMetric',
-                xtype: 'rallycheckboxfield',
-                label : "Show Churn Ratio (std dev of scope divided by average daily scope)"
-            },
-            {
-                name: 'showPercentEstimatedMetric',
-                xtype: 'rallycheckboxfield',
-                label : "Show Percentage of stories with a plan estimate metric"
-            },
-            {
-                name: 'showTaskChurnRateMetric',
-                xtype: 'rallycheckboxfield',
-                label : "Show Task Churn Ratio (std dev of task scope divided by average daily scope)"
-            },
-            {
-                name: 'showDailyInProgressMetric',
-                xtype: 'rallycheckboxfield',
-                label : "Show average daily percentage of work that is In-Progress"
-            },
-	        {
-                name: 'showBurnDownResiduals',
-                xtype: 'rallycheckboxfield',
-                label : "Show burn down residuals (values closer to 1 indicate burndown closer to ideal)"
-            },
-            {
-                name: 'useLateAcceptanceRate',
-                xtype: 'rallycheckboxfield',
-                label : "use Late Accepted value for Acceptance Ratio"
-            },
-            {
-                name: 'commitAcceptRatio',
-                xtype: 'rallytextfield',
-                label : "Target accepted .v. committed percent"
-            },
-            {
-                name: 'continuousImprovementRangeMin',
-                xtype: 'rallytextfield',
-                label: 'Continuous Improvement Range Min'
-            },
-            {
-                name: 'continuousImprovementRangeMax',
-                xtype: 'rallytextfield',
-                label: 'Continuous Improvement Range Max'
-            }
-        ];
+			{
+				name: 'showAcceptanceRateMetric',
+				xtype: 'rallycheckboxfield',
+				label : "Show Accepted .v. Commit %"
+			},
+			{
+				name: 'showImprovementRateMetric',
+				xtype: 'rallycheckboxfield',
+				label : "Show Improvement work as % of Scope"
+			},
+			{
+				name: 'showChurnRateMetric',
+				xtype: 'rallycheckboxfield',
+				label : "Show Churn Ratio (std dev of scope divided by average daily scope)"
+			},
+			{
+				name: 'showPercentEstimatedMetric',
+				xtype: 'rallycheckboxfield',
+				label : "Show Percentage of stories with a plan estimate metric"
+			},
+			{
+				name: 'showTaskChurnRateMetric',
+				xtype: 'rallycheckboxfield',
+				label : "Show Task Churn Ratio (std dev of task scope divided by average daily scope)"
+			},
+			{
+				name: 'showDailyInProgressMetric',
+				xtype: 'rallycheckboxfield',
+				label : "Show average daily percentage of work that is In-Progress"
+			},
+			{
+				name: 'showBurnDownResiduals',
+				xtype: 'rallycheckboxfield',
+				label : "Show burn down residuals (values closer to 1 indicate burndown closer to ideal)"
+			},
+			{
+				name: 'useLateAcceptanceRate',
+				xtype: 'rallycheckboxfield',
+				label : "use Late Accepted value for Acceptance Ratio"
+			},
+			{
+				name: 'commitAcceptRatio',
+				xtype: 'rallytextfield',
+				label : "Target accepted .v. committed percent"
+			},
+			{
+				name: 'continuousImprovementRangeMin',
+				xtype: 'rallytextfield',
+				label: 'Continuous Improvement Range Min'
+			},
+			{
+				name: 'continuousImprovementRangeMax',
+				xtype: 'rallytextfield',
+				label: 'Continuous Improvement Range Max'
+			}
+		];
 
-        _.each(values,function(value){
+		_.each(values,function(value){
 			value.labelWidth = 250;
-            value.labelAlign = 'left'
-        });
+			value.labelAlign = 'left';
+		});
 
-        return values;
-    },
+		return values;
+	},
 
-    config: {
-        defaultSettings : {
-        	numberSprints : 4,
-        	showOnlyTeams : false,
-        	showTeamMembers : true,
-        	showAcceptanceRateMetric : true,
-        	showImprovementRateMetric : false,
-        	showChurnRateMetric : true,
-        	showPercentEstimatedMetric : true,
-        	showTaskChurnRateMetric : true,
-        	showDailyInProgressMetric : true,
-        	showBurnDownResiduals : true,
-            commitAcceptRatio : 75,
-            continuousImprovementRangeMin : 5,
-            continuousImprovementRangeMax : 10,
-            useLateAcceptanceRate : true
-        }
-    },
+	config: {
+		defaultSettings : {
+			numberSprints : 4,
+			showOnlyTeams : false,
+			showTeamMembers : true,
+			showAcceptanceRateMetric : true,
+			showImprovementRateMetric : false,
+			showChurnRateMetric : true,
+			showPercentEstimatedMetric : true,
+			showTaskChurnRateMetric : true,
+			showDailyInProgressMetric : true,
+			showBurnDownResiduals : true,
+			commitAcceptRatio : 75,
+			continuousImprovementRangeMin : 5,
+			continuousImprovementRangeMax : 10,
+			useLateAcceptanceRate : true
+		}
+	},
 
 	/*
 		queryIteration retrieves all iterations in scope that ended before today and after one
@@ -178,7 +178,7 @@ Ext.define('CustomApp', {
 				var teams = _.map(_.keys(groupedByProject),function(pid) {
 					return _.find(flatNotEmptyTM,function(p) {
 						return p.get("ObjectID")==pid;
-					})
+					});
 				});
 				var teamLastIterations = _.map( _.values(groupedByProject), function(gbp) {
 					return _.last(gbp,app.numberSprints);
@@ -207,8 +207,8 @@ Ext.define('CustomApp', {
 						},
 						function(err,teamMemberships) {
 							_.each(app.teamResults,function(t,x) {
-								t.teamMembers = teamMemberships[x]
-							})
+								t.teamMembers = teamMemberships[x];
+							});
 							console.log("teamResults",app.teamResults);
 							app.addTable(app.teamResults);
 						}
@@ -221,22 +221,22 @@ Ext.define('CustomApp', {
 	},
 
 
-    /*
-        Called for each team to return the iteration and improvements data records
-    */
-    teamData : function( iterations, callback) {
-        app.iterationsData( iterations, function(x,iterationResults) {
-            app.improvementsData( iterations,function(err,improvementResults) {
-            	app.allIterationItems( iterations, function(err,allIterationItems) {
-            		callback(null,[iterationResults,improvementResults,allIterationItems]);	
-            	})
-            });
-        });
-    },
+	/*
+		Called for each team to return the iteration and improvements data records
+	*/
+	teamData : function( iterations, callback) {
+		app.iterationsData( iterations, function(x,iterationResults) {
+			app.improvementsData( iterations,function(err,improvementResults) {
+				app.allIterationItems( iterations, function(err,allIterationItems) {
+					callback(null,[iterationResults,improvementResults,allIterationItems]);	
+				});
+			});
+		});
+	},
 
-    allIterationItems : function( iterations, callback) {
+	allIterationItems : function( iterations, callback) {
 
-        var storyConfigs = _.map( iterations, function(iteration) {
+		var storyConfigs = _.map( iterations, function(iteration) {
 			return {
 				model  : "HierarchicalRequirement",
 				fetch  : ['ObjectID','PlanEstimate','Name','FormattedID','Project','ScheduleState'],
@@ -249,7 +249,7 @@ Ext.define('CustomApp', {
 			};
 		});
 
-        var defectConfigs = _.map( iterations, function(iteration) {
+		var defectConfigs = _.map( iterations, function(iteration) {
 			return {
 				model  : "Defect",
 				fetch  : ['ObjectID','PlanEstimate','Name','FormattedID','Project','ScheduleState'],
@@ -271,7 +271,7 @@ Ext.define('CustomApp', {
 					// total individual values for each artifact in iteration.
 					var allIterationData = {
 						totalScope : _.reduce(iterationArtifacts, function(memo,r) {
-							return memo + (r.get("PlanEstimate")!==null  ? r.get("PlanEstimate") : 0)
+							return memo + (r.get("PlanEstimate")!==null  ? r.get("PlanEstimate") : 0);
 						},0),
 						lateAccepted : _.reduce(iterationArtifacts, function(memo,r) {
 							return memo + app.acceptedValue(r);
@@ -279,19 +279,18 @@ Ext.define('CustomApp', {
 						percentEstimated : iterationArtifacts.length > 0 ? 
 							(	_.filter(iterationArtifacts,function(artifact) {
 									return (artifact.get("PlanEstimate") !== null && artifact.get("PlanEstimate") > 0);
-								}).length / iterationArtifacts.length * 100)
-							  : 0
-					}
+								}).length / iterationArtifacts.length * 100) : 0
+					};
 					allData.push(allIterationData);
 				});
 				callback(null,allData);
 			});
 		});
-    },
+	},
 
-    improvementsData : function( iterations, callback) {
+	improvementsData : function( iterations, callback) {
 
-        var configs = _.map( iterations, function(iteration) {
+		var configs = _.map( iterations, function(iteration) {
 			return {
 				model  : "HierarchicalRequirement",
 				fetch  : ['ObjectID','PlanEstimate','Name','FormattedID','Project','ScheduleState'],
@@ -321,20 +320,20 @@ Ext.define('CustomApp', {
 					totalImprovementPoints : _.reduce(result,function(memo,r){
 						return memo + app.acceptedValue(r);
 					},0)
-				}
+				};
 				allData.push(improvementRec);
 			});
 			
 			callback(null,allData);
 		});
 
-    },
+	},
 
-    acceptedValue : function(story) {
+	acceptedValue : function(story) {
 		var accepted = story.get("ScheduleState") === "Accepted" || story.get("ScheduleState") == "Released";
 		var val = accepted && (story.get("PlanEstimate")!==null) ? story.get("PlanEstimate") : 0;
 		return val;
-    },
+	},
 
 	/*
 		Retrieves the iteration metrics (iterationcumulativeflowdata) for each set of iterations
@@ -372,6 +371,8 @@ Ext.define('CustomApp', {
 					});
 					var firstDayRecs = groupedByDate[_.first(iterationDates)];
 					var lastDayRecs = groupedByDate[_.last(iterationDates)];
+					console.log(iterationDates);
+					console.log(_.map(lastDayRecs,function(r){return r.data;}));
 					if((firstDayRecs.length>0) && (lastDayRecs.length>0))
 					{
 						var committed = _.reduce( firstDayRecs, function(memo,val) {
@@ -380,8 +381,10 @@ Ext.define('CustomApp', {
 						var accepted = _.reduce( lastDayRecs, function(memo,val) {
 							var estimate = val.get("CardEstimateTotal");
 							var done = val.get("CardState") === "Accepted" || val.get("CardState") === "Released";
-							return memo + ( done && !_.isNull(estimate) ) ? estimate : 0;
+							
+							return memo + (( done && !_.isNull(estimate) ) ? estimate : 0);
 						}, 0 );
+						
 						summaries.push( {
 							project : iterations[index].get("Project"),
 							iteration : iterations[index].get("Name"),
@@ -394,7 +397,7 @@ Ext.define('CustomApp', {
 							dailyInProgressRate : dailyInProgressRate,
 							stdResiduals : stdResiduals
 						});
-					};
+					}
 				}
 			});
 			callback(null,summaries);
@@ -406,19 +409,18 @@ Ext.define('CustomApp', {
 	churnRatio : function ( arrDailyRecs ) {
 
 		var dailyTotals = _.map( arrDailyRecs, function(recs) {
-			return _.reduce(recs,function(memo,r) { return memo + r.get("CardEstimateTotal");},0)
+			return _.reduce(recs,function(memo,r) { return memo + r.get("CardEstimateTotal");},0);
 		});
 		var dailyAverage = _.mean(dailyTotals);
 		var stdDev = _.stdDeviation(dailyTotals);
 		return dailyAverage > 0 ? Math.round((stdDev / dailyAverage) *100) : 0;
-
 	},
 
 	// Returns the std dev when passed an array of arrays of daily cumulative flow recs
 	taskChurnRatio : function ( arrDailyRecs ) {
 
 		var dailyTotals = _.map( arrDailyRecs, function(recs) {
-			return _.reduce(recs,function(memo,r) { return memo + r.get("TaskEstimateTotal");},0)
+			return _.reduce(recs,function(memo,r) { return memo + r.get("TaskEstimateTotal");},0);
 		});
 		var dailyAverage = _.mean(dailyTotals);
 		var stdDev = _.stdDeviation(dailyTotals);
@@ -469,7 +471,7 @@ Ext.define('CustomApp', {
 
 	var sse = _.sum(squaredError);
 	var sst = _.sum(diffFromMean);
-	var rs = sst !== 0 ?  1 - (Math.round( (sse/sst) *100 ) / 100) : 0
+	var rs = sst !== 0 ?  1 - (Math.round( (sse/sst) *100 ) / 100) : 0;
 	return rs;
 
 	},
@@ -563,7 +565,7 @@ Ext.define('CustomApp', {
 
 		var columnCfgs = [
 			{ text: 'Team', dataIndex: 'team', renderer : app.renderTeamName },
-			{ text: 'Last 4 Sprints', dataIndex: 'summary', renderer : app.renderSummaries, width : 250 },
+			{ text: 'Last 4 Sprints', dataIndex: 'summary', renderer : app.renderSummaries, width : 250 }
 		];
 		if (app.getSetting("showTeamMembers")===true)
 			columnCfgs.push(app.teamMembersColumn);
@@ -603,11 +605,14 @@ Ext.define('CustomApp', {
 		// return "Team " + rowIdx;
 		var userValue = function(m) {
 			var d = m.get("DisplayName");
-			return ((d!=null&&d!="") ? d : m.get("UserName"));
-		}
+			return ((d!==null&&d!=="") ? d : m.get("UserName"));
+		};
+
+		if (value.length > 7)
+			return value.length + " Team Members";
 
 		return _.map(value,function(teamMember,i) {
-			return userValue(teamMember) 
+			return userValue(teamMember);
 		}).join("<br/>");
 		// + ( i < (value.length-1) ? "<br/>" : "")
 	},
@@ -669,7 +674,7 @@ Ext.define('CustomApp', {
 		var data = _.map( value, function (v,i) {
 			var d = {
 				index : i+1
-			}
+			};
 			_.each(fields,function(f) { 
 				if (f!=="index")
 					d[f] = _.isUndefined(v[f]) ? 0 : v[f];
@@ -730,13 +735,13 @@ Ext.define('CustomApp', {
 					axis: 'left',
 					xField: series[0],
 					yField: s
-				}
+				};
 				if (x>0) {
 					config.markerConfig = { 
-    	                type: 'circle',
-		                size: 1,
-                		radius: 0
-                	}
+						type: 'circle',
+						size: 1,
+						radius: 0
+					};
 				}
 				return config;
 			})
@@ -759,17 +764,17 @@ Ext.define('CustomApp', {
 		var s = 
 		"<table class='iteration-summary'>" +
 			"<th>" +
-			_.map(value,function(v){ return '<td>'+endDateF(v)+'</td>'}).join('') +
+			_.map(value,function(v){ return '<td><i>'+endDateF(v)+'</i></td>';}).join('') +
 			"</th>"+
-			"<tr><td>Committed</td>" +
-			_.map(value,function(v){ return '<td>'+Math.round(v.committed)+'</td>' }).join('') +
+			"<tr><td><i>Committed</i></td>" +
+			_.map(value,function(v){ return '<td>'+Math.round(v.committed)+'</td>'; }).join('') +
 			"</tr>"+
-			"<tr><td>Accepted</td>" +
-			_.map(value,function(v){ return '<td>'+Math.round(v.accepted)+'</td>' }).join('') +
+			"<tr><td><i>Accepted</i></td>" +
+			_.map(value,function(v){ return '<td>'+Math.round(v.accepted)+'</td>'; }).join('') +
 			"</tr>" +
-			"<tr><td>Late Accepted</td>" +
-			_.map(value,function(v){ return '<td>'+Math.round(v.lateAccepted)+'</td>' }).join('') +
-			"</tr></table>"
+			"<tr><td><i>Late Accepted</i></td>" +
+			_.map(value,function(v){ return '<td>'+Math.round(v.lateAccepted)+'</td>'; }).join('') +
+			"</tr></table>";
 		return s;
 	},
 
