@@ -21,14 +21,12 @@ A measure of how much the sprint backlog changes during the sprint, it is impact
 
 Y-Axis is a numeric score. A value of zero means there was no change in scope during the sprint. Lower values are better.
 
-* **Percent Esitmated**
+* **Percent Estimated**
 What percentage of the sprint backlog was estimated at the beginning of the sprint.
-
 Y-Axis is a % where 100% means that all stories in the sprint had an estimate on the first day of the sprint. Values closer to 100% are better.
 
 * **Task Churn Ratio**
 A measure of how much the task backlog changes during the sprint.
-
 Y-Axis is a numeric score. Values closer to zero mean that there was less change in the total task hours scope during the iteration. As a best practices task hours are estimated at the beginning of the sprint. Values closer to zero are better.
 
 * **Average Daily In Progress %**
