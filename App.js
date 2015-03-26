@@ -209,7 +209,6 @@ Ext.define('CustomApp', {
 							_.each(app.teamResults,function(t,x) {
 								t.teamMembers = teamMemberships[x];
 							});
-							console.log("teamResults",app.teamResults);
 							app.addTable(app.teamResults);
 						}
 					);
@@ -371,8 +370,6 @@ Ext.define('CustomApp', {
 					});
 					var firstDayRecs = groupedByDate[_.first(iterationDates)];
 					var lastDayRecs = groupedByDate[_.last(iterationDates)];
-					console.log(iterationDates);
-					console.log(_.map(lastDayRecs,function(r){return r.data;}));
 					if((firstDayRecs.length>0) && (lastDayRecs.length>0))
 					{
 						var committed = _.reduce( firstDayRecs, function(memo,val) {
