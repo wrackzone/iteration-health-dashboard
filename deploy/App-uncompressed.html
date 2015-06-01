@@ -776,10 +776,12 @@ Ext.define('CustomApp', {
 			"<tr><td><i>Committed</i></td>" +
 			_.map(value,function(v){ return '<td>'+Math.round(v.committed)+'</td>'; }).join('') +
 			"</tr>"+
-			"<tr><td><i>Accepted</i></td>" +
+			// "<tr><td><i>Accepted</i></td>" +
+			"<tr><td><i>Accepted In Sprint</i></td>" +
 			_.map(value,function(v){ return '<td>'+Math.round(v.accepted)+'</td>'; }).join('') +
 			"</tr>" +
-			"<tr><td><i>Late Accepted</i></td>" +
+			// "<tr><td><i>Late Accepted</i></td>" +
+			"<tr><td><i>Total Accepted</i></td>" +
 			_.map(value,function(v){ return '<td>'+Math.round(v.lateAccepted)+'</td>'; }).join('') +
 			"</tr></table>";
 		return s;
