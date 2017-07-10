@@ -12,7 +12,7 @@ This app provides key iteration health metrics for Rally teams.
 A visual representation of key agile health indicators
 
 * **% Accepted** 
-The percentage of committed work that is accepted. Y-Axis is in % where 100% means that all work committed in that sprint was accepted. Values closer to 100% are better.
+The percentage of committed work that is accepted. The committed value is the sum of story points on the first day of that iteration. Y-Axis is in % where 100% means that all work committed in that sprint was accepted. Values closer to 100% are better.
 
 * **Churn Ratio**
 A measure of how much the sprint backlog changes during the sprint, it is impacted by stories being moved into the sprint, out of the sprint or if estimates change. It is calculated using the standard deviation of the daily sprint scope totals divided by the average daily scope. Y-Axis is a numeric score. A value of zero means there was no change in scope during the sprint. Lower values are better.
